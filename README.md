@@ -1,0 +1,18 @@
+# Estación de contaminación y meteorológica
+
+Código para ESP32
+
+PANTALLA
+1 GRIS GND
+2 BLANCO VCC (5V)
+3 NEGRO RS – D5
+4 MARRON P/W – D23
+5 ROJO E – D18
+6 NARANJA PSB – GND
+7 AMARILLO RST – D34
+8 VERDE BLA – 3,3V
+9 NARANJA BLK – GND
+
+BME680
+SCA 21
+SCL 22
