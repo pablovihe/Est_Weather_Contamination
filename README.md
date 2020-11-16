@@ -2,7 +2,7 @@
 
 ## Código para ESP32
 
-### PANTALLA
+### PANTALLA LCD 128x64
 - GRIS GND
 - BLANCO VCC (5V)
 - NEGRO RS – D5
@@ -16,5 +16,6 @@
 ### BME680
 - SCA 21
 - SCL 22
+
 
 ![alt text](https://github.com/pablovihe/Est_Weather_Contamination/blob/main/est.jpeg?raw=true)
