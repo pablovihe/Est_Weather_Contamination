@@ -26,8 +26,8 @@ void setup(void)
 
   u8g2.begin();
   u8g2.enableUTF8Print();
-  u8g2.setFont(u8g2_font_helvB10_tf); 
-  u8g2.setColorIndex(1);  
+  u8g2.setFont(u8g2_font_helvB10_tf);
+  u8g2.setColorIndex(1);
 
   bsec_virtual_sensor_t sensorList[10] = {
     BSEC_OUTPUT_RAW_TEMPERATURE,
@@ -44,10 +44,6 @@ void setup(void)
 
   iaqSensor.updateSubscription(sensorList, 10, BSEC_SAMPLE_RATE_LP);
   checkIaqSensorStatus();
-
-  // Print the header
-  output = "Timestamp [ms], raw temperature [°C], pressure [hPa], raw relative humidity [%], gas [Ohm], IAQ, IAQ accuracy, temperature [°C], relative humidity [%], Static IAQ, CO2 equivalent, breath VOC equivalent";
-  Serial.println(output);
 }
 
 // Function that is looped forever
@@ -55,71 +51,17 @@ void loop(void)
 {
   unsigned long time_trigger = millis();
   if (iaqSensor.run()) { // If new data is available
-     u8g2.firstPage();
-  do {
-    u8g2.drawFrame(0,0,128,31);         
-    u8g2.drawFrame(0,33,128,31);           
-    u8g2.drawStr( 1, 13, "T:");
-    u8g2.setCursor(14,13);
-    u8g2.print(iaqSensor.temperature,2);
-    u8g2.drawUTF8(50, 13, DEGREE_SYMBOL);
-    u8g2.drawUTF8(54, 13, "C");
-
-    u8g2.drawStr( 65, 13, "H:");
-    u8g2.setCursor(80,13);
-    u8g2.print(iaqSensor.humidity,2); 
-    u8g2.drawUTF8(115, 13, "%");
-
-    u8g2.drawStr(1,28, "CO2:");        
-    u8g2.setCursor(41,28);
-    u8g2.print(iaqSensor.co2Equivalent,0);
-    u8g2.setCursor(96,26);
-    u8g2.print("ppm");
-    u8g2.setCursor(1,46);
-    u8g2.print("VBOC:"); 
-    u8g2.setCursor(51,46);
-    u8g2.print(iaqSensor.breathVocEquivalent*1000,0);
-    u8g2.setCursor(100,46);
-    u8g2.print("ppb");   
-
-    u8g2.setCursor(1,61);
-    u8g2.print("IAQ:");      
-    u8g2.setCursor(41,61);
-    u8g2.print(iaqSensor.staticIaq,0);        
-    u8g2.setCursor(75,61);
-    u8g2.print("Acu:");      
-    u8g2.setCursor(108,61);
-    u8g2.print(iaqSensor.iaqAccuracy);        
-    } while( u8g2.nextPage() );
+    u8g2.firstPage();
+    do {
+      draw();
+    } while ( u8g2.nextPage() );
     delay(100);
-    
-//    output = String(time_trigger);
-      output = String("Temperatura = ");
-      output += String(iaqSensor.temperature);
-      output += String(" ºC | Humedad = ");
-      output += String(iaqSensor.humidity);
-      output += String(" %H | Presion = ");
-//    output += String(iaqSensor.rawTemperature);
-      output += String(iaqSensor.pressure);
-      output += String(" Pa | IAQ = ");
-//    output += ", " + String(iaqSensor.rawHumidity);
-//    output += ", " + String(iaqSensor.gasResistance);
-//    output += ", " + String(iaqSensor.iaq);
-//    output += ", " + String(iaqSensor.iaqAccuracy);
-      output += String(iaqSensor.staticIaq);
-      output += String(" | CO2 = ");
-      output += String(iaqSensor.co2Equivalent);
-      output += String(" ppm | BVOC = ");
-      output += String(iaqSensor.breathVocEquivalent);
-      output += String(" ppb ");
-      output += "iaq accuracy" + String(iaqSensor.iaqAccuracy);
-    Serial.println(output);
-  } else {
+  }
+  else {
     checkIaqSensorStatus();
   }
 }
 
-// Helper function definitions
 void checkIaqSensorStatus(void)
 {
   if (iaqSensor.status != BSEC_OK) {
@@ -154,4 +96,40 @@ void errLeds(void)
   delay(100);
   digitalWrite(LED_BUILTIN, LOW);
   delay(100);
+}
+
+void draw() {
+  u8g2.drawFrame(0, 0, 128, 31);
+  u8g2.drawFrame(0, 33, 128, 31);
+  u8g2.drawStr( 1, 13, "T:");
+  u8g2.setCursor(14, 13);
+  u8g2.print(iaqSensor.temperature, 2);
+  u8g2.drawUTF8(50, 13, DEGREE_SYMBOL);
+  u8g2.drawUTF8(54, 13, "C");
+
+  u8g2.drawStr( 65, 13, "H:");
+  u8g2.setCursor(80, 13);
+  u8g2.print(iaqSensor.humidity, 2);
+  u8g2.drawUTF8(115, 13, "%");
+
+  u8g2.drawStr(1, 28, "CO2:");
+  u8g2.setCursor(41, 28);
+  u8g2.print(iaqSensor.co2Equivalent, 0);
+  u8g2.setCursor(96, 26);
+  u8g2.print("ppm");
+  u8g2.setCursor(1, 46);
+  u8g2.print("VBOC:");
+  u8g2.setCursor(51, 46);
+  u8g2.print(iaqSensor.breathVocEquivalent, 0);
+  u8g2.setCursor(100, 46);
+  u8g2.print("ppb");
+
+  u8g2.setCursor(1, 61);
+  u8g2.print("IAQ:");
+  u8g2.setCursor(41, 61);
+  u8g2.print(iaqSensor.staticIaq, 0);
+  u8g2.setCursor(75, 61);
+  u8g2.print("Acu:");
+  u8g2.setCursor(108, 61);
+  u8g2.print(iaqSensor.iaqAccuracy);
 }
